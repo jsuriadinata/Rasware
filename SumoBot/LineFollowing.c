@@ -15,6 +15,7 @@ int main() {
   boolean lsLeft = checkADC(0);
   boolean lsMiddle = checkADC(1);
   boolean lsRight = checkADC(2);
+  moveMotors(lsLeft, lsMiddle, lsRight)
 
 }
 
@@ -56,9 +57,9 @@ void initGPIOLineSensor(void){
     initialized = true;
 
     // set pins to ADC
-    adc[0] = InitializeADC(PIN_D0);
-    adc[1] = InitializeADC(PIN_D1);
-    adc[2] = InitializeADC(PIN_D2);
+    adc[0] = InitializeADC(PIN_C4);
+    adc[1] = InitializeADC(PIN_C5);
+    adc[2] = InitializeADC(PIN_C6);
 }
 
 void gpioLineSensorDemo(void){

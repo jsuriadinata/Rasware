@@ -3,11 +3,11 @@
 ###############################################################################
 # Quick and dirty script to find the right device path for the LM4F/TM4C across
 # OSes for Rasware.
-# 
+#
 # Tested on x64 Linux and macOS 10.12 (Sierra). Contains much magic.
 ############################################################################### 
 
-UDEV_PATH="/dev/lm4f"
+UDEV_PATH="/dev/ttyACM0"
 
 function macOS
 {
