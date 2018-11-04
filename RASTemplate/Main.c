@@ -47,17 +47,43 @@ int main() {
   tBoolean r = checkADC(adc[0]);
   tBoolean m = checkADC(adc[1]);
   tBoolean l = checkADC(adc[2]);
+  float temp = ADCRead(snr);
+  // float temp1 = 999999;
+  // tBoolean turning = true;
+  // SetMotor(mLeft, -0.1);
+  // SetMotor(mRight, 0.1);
   while (true){
     // object sensing
+    // temp = ADCRead(snr);
+    // notSee = temp < 0.375;
+    // if(!notSee && turning){
+    //   if(temp > temp1 + 0.01){
+    //     SetMotor(mLeft, 0.3);
+    //     SetMotor(mRight, 0.3);
+    //     turning = false;
+    //   }
+    // }
+    // if(!turning && notSee){
+    //   SetMotor(mLeft, -0.2);
+    //   SetMotor(mRight, 0.2);
+    //   turning = true;
+    // }
+    // temp1 = ADCRead(snr);
     if(notSee){
-      SetMotor(mLeft, -0.2);
-      SetMotor(mRight, 0.2);
-      WaitUS(10);
+      // if (temp < 0.1){
+      //   SetMotor(mLeft, -0.3);
+      //   SetMotor(mRight, -0.1);
+      //   Wait(1);
+      // }
+      SetMotor(mLeft, -1);
+      SetMotor(mRight, 1);
+      WaitUS(20 - (50 * temp));
     } else {
-      SetMotor(mLeft, 0.5);
-      SetMotor(mRight, 0.5);
+      SetMotor(mLeft, 1);
+      SetMotor(mRight, 1);
     }
-    notSee = ADCRead(snr) < 0.375;
+    temp = ADCRead(snr);
+    notSee = temp < 0.38;
     r = checkADC(adc[0]);
     m = checkADC(adc[1]);
     l = checkADC(adc[2]);
@@ -88,7 +114,8 @@ int main() {
       l = checkADC(adc[2]);
     }
     // increasing the value compared to will decrease the distance sensed
-    notSee = ADCRead(snr) < 0.375;
+    temp = ADCRead(snr);
+    notSee = temp < 0.38;
   }
 
   //doesnt work with fast turns
