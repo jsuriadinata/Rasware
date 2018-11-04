@@ -41,9 +41,15 @@ int main() {
   mRight = InitializeServoMotor(PIN_B0, true);
   mLeft = InitializeServoMotor(PIN_B1, false);
   snr = InitializeADC(PIN_E4);
-  // object sensing
+  initLineSensor();
+
   tBoolean notSee = ADCRead(snr) < 0.4;
+  tBoolean r = checkADC(adc[0]);
+  tBoolean m = checkADC(adc[1]);
+  tBoolean l = checkADC(adc[2]);
   while (true){
+    // object sensing
+    while(!r && !m && !l)
     if(notSee){
       SetMotor(mLeft, -0.05);
       SetMotor(mRight, 0.05);
@@ -52,36 +58,36 @@ int main() {
       SetMotor(mRight, 0.2);
     }
     notSee = ADCRead(snr) < 0.4;
-  }
-  // line following
-  initLineSensor();
-  SetMotor(mLeft, 0.1);
-  SetMotor(mRight, 0.1);
-  Wait(1);
-  tBoolean r = ADCRead(adc[0]) < 0.5;
-  tBoolean m = ADCRead(adc[1]) < 0.5;
-  tBoolean l = ADCRead(adc[2]) < 0.5;
-  while(true){
-    if (r && m && l){
-      SetMotor(mLeft, -0.1);
-      SetMotor(mRight, -0.1);
-      WaitUS(20);
-    } else if (r && m){
-      SetMotor(mLeft, 0.1);
-      SetMotor(mRight, 0.25);
-    } else if (l && m){
-      SetMotor(mLeft, 0.25);
-      SetMotor(mRight, 0.1);
-    } else if (r){
-      SetMotor(mLeft, 0.1);
-      SetMotor(mRight, 0.15);
-    } else if (l){
-      SetMotor(mLeft, 0.15);
-      SetMotor(mRight, 0.1);
-    }
+    r = checkADC(adc[0]);
+    m = checkADC(adc[1]);
+    l = checkADC(adc[2]);
+    // line following
+    // SetMotor(mLeft, 0.1);
+    // SetMotor(mRight, 0.1);
+    // Wait(1);
+    while(r || m || l){
+      if (r && m && l){
+        SetMotor(mLeft, -0.1);
+        SetMotor(mRight, -0.1);
+        WaitUS(20);
+      } else if (r && m){
+        SetMotor(mLeft, 0.1);
+        SetMotor(mRight, 0.25);
+      } else if (l && m){
+        SetMotor(mLeft, 0.25);
+        SetMotor(mRight, 0.1);
+      } else if (r){
+        SetMotor(mLeft, 0.1);
+        SetMotor(mRight, 0.15);
+      } else if (l){
+        SetMotor(mLeft, 0.15);
+        SetMotor(mRight, 0.1);
+      }
       r = checkADC(adc[0]);
       m = checkADC(adc[1]);
       l = checkADC(adc[2]);
+    }
+    notSee = ADCRead(snr) < 0.4;
   }
 
   //doesnt work with fast turns
