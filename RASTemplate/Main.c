@@ -49,15 +49,15 @@ int main() {
   tBoolean l = checkADC(adc[2]);
   while (true){
     // object sensing
-    while(!r && !m && !l)
     if(notSee){
-      SetMotor(mLeft, -0.05);
-      SetMotor(mRight, 0.05);
-    } else {
-      SetMotor(mLeft, 0.2);
+      SetMotor(mLeft, -0.2);
       SetMotor(mRight, 0.2);
+      WaitUS(10);
+    } else {
+      SetMotor(mLeft, 0.5);
+      SetMotor(mRight, 0.5);
     }
-    notSee = ADCRead(snr) < 0.4;
+    notSee = ADCRead(snr) < 0.375;
     r = checkADC(adc[0]);
     m = checkADC(adc[1]);
     l = checkADC(adc[2]);
@@ -88,7 +88,7 @@ int main() {
       l = checkADC(adc[2]);
     }
     // increasing the value compared to will decrease the distance sensed
-    notSee = ADCRead(snr) < 0.4;
+    notSee = ADCRead(snr) < 0.375;
   }
 
   //doesnt work with fast turns
