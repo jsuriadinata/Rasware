@@ -67,7 +67,7 @@ int main() {
     // Wait(1);
     while(r || m || l){
       if (r && m && l){
-        SetMotor(mLeft, -0.1);
+        SetMotor(mLeft, -0.3);
         SetMotor(mRight, -0.1);
         WaitUS(20);
       } else if (r && m){
@@ -87,6 +87,7 @@ int main() {
       m = checkADC(adc[1]);
       l = checkADC(adc[2]);
     }
+    // increasing the value compared to will decrease the distance sensed
     notSee = ADCRead(snr) < 0.4;
   }
 
