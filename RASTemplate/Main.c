@@ -10,7 +10,8 @@ static tMotor *mRight;
 
 static tADC *adc[3];
 static tBoolean initialized = false;
-static tBoolean lsrArray[2];
+
+static tADC *snr;
 
 // initializes all of the pins for the line sensor
 void initLineSensor(){
@@ -32,15 +33,31 @@ tBoolean checkADC(tADC *a){
   return ADCRead(a) < 0.5;
 }
 
+tBoolean watch(){
+  return ADCRead(snr) > 0.1;
+}
+
 int main() {
-  // InitializeSystemTime();
   mRight = InitializeServoMotor(PIN_B0, true);
   mLeft = InitializeServoMotor(PIN_B1, false);
+  snr = InitializeADC(PIN_E4);
+  // object sensing
+  tBoolean notSee = ADCRead(snr) < 0.4;
+  while (true){
+    if(notSee){
+      SetMotor(mLeft, -0.05);
+      SetMotor(mRight, 0.05);
+    } else {
+      SetMotor(mLeft, 0.2);
+      SetMotor(mRight, 0.2);
+    }
+    notSee = ADCRead(snr) < 0.4;
+  }
+  // line following
   initLineSensor();
   SetMotor(mLeft, 0.1);
   SetMotor(mRight, 0.1);
   Wait(1);
-  // initLineSensor(initialized);
   tBoolean r = ADCRead(adc[0]) < 0.5;
   tBoolean m = ADCRead(adc[1]) < 0.5;
   tBoolean l = ADCRead(adc[2]) < 0.5;
