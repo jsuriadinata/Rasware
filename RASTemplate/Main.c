@@ -5,16 +5,21 @@
 #include <RASLib/inc/motor.h>
 #include <RASLib/inc/time.h>
 
+static tBoolean initialized = false;
+
 static tMotor *mLeft;
 static tMotor *mRight;
 
 static tADC *adc[3];
-static tBoolean initialized = false;
+
 
 static tADC *snr;
 
+static tBoolean close = true;
+
+
 // initializes all of the pins for the line sensor
-void initLineSensor(){
+void initialize(){
     if(initialized){
         return;
     }
@@ -24,6 +29,9 @@ void initLineSensor(){
     adc[0] = InitializeADC(PIN_D0);
     adc[1] = InitializeADC(PIN_D1);
     adc[2] = InitializeADC(PIN_D2);
+    mRight = InitializeServoMotor(PIN_B0, true);
+    mLeft = InitializeServoMotor(PIN_B1, false);
+    snr = InitializeADC(PIN_E4);
 }
 
 // checks the value of the ADC
@@ -37,17 +45,20 @@ tBoolean watch(){
   return ADCRead(snr) > 0.1;
 }
 
-int main() {
-  mRight = InitializeServoMotor(PIN_B0, true);
-  mLeft = InitializeServoMotor(PIN_B1, false);
-  snr = InitializeADC(PIN_E4);
-  initLineSensor();
+void rotate(){
+  SetMotor(mLeft, -1);
+  SetMotor(mRight, 1);
+  close = true;
+}
 
-  tBoolean notSee = ADCRead(snr) < 0.4;
+int main() {
+  initialize();
+  float temp = ADCRead(snr);
+  tBoolean see = temp > 0.4;
   tBoolean r = checkADC(adc[0]);
   tBoolean m = checkADC(adc[1]);
   tBoolean l = checkADC(adc[2]);
-  float temp = ADCRead(snr);
+
   // float temp1 = 999999;
   // tBoolean turning = true;
   // SetMotor(mLeft, -0.1);
@@ -69,21 +80,21 @@ int main() {
     //   turning = true;
     // }
     // temp1 = ADCRead(snr);
-    if(notSee){
-      // if (temp < 0.1){
-      //   SetMotor(mLeft, -0.3);
-      //   SetMotor(mRight, -0.1);
-      //   Wait(1);
-      // }
-      SetMotor(mLeft, -1);
-      SetMotor(mRight, 1);
-      WaitUS(20 - (50 * temp));
+    if(!see){
+        rotate();
     } else {
+      if (temp > 0.97 && close == true){
+        SetMotor(mLeft, -0.3);
+        SetMotor(mRight, -0.1);
+        Wait(1);
+        close = false;
+      }
+      WaitUS(20 - (20 * temp));
       SetMotor(mLeft, 1);
       SetMotor(mRight, 1);
     }
     temp = ADCRead(snr);
-    notSee = temp < 0.38;
+    see = temp > 0.4;
     r = checkADC(adc[0]);
     m = checkADC(adc[1]);
     l = checkADC(adc[2]);
@@ -115,7 +126,7 @@ int main() {
     }
     // increasing the value compared to will decrease the distance sensed
     temp = ADCRead(snr);
-    notSee = temp < 0.38;
+    see = temp > 0.4;
   }
 
   //doesnt work with fast turns
