@@ -12,7 +12,6 @@ static tMotor *mRight;
 
 static tADC *adc[3];
 
-
 static tADC *snr;
 
 static tBoolean close = true;
@@ -54,8 +53,7 @@ void rotate(){
 
 int main() {
   initialize();
-  float temp = ADCRead(snr);
-  tBoolean see = temp > 0.4;
+  tBoolean seeLeft = ADCRead(snrLeft) > 0.4;
   tBoolean r = checkADC(adc[0]);
   tBoolean m = checkADC(adc[1]);
   tBoolean l = checkADC(adc[2]);
@@ -81,7 +79,9 @@ int main() {
     //   turning = true;
     // }
     // temp1 = ADCRead(snr);
-    if(!see){
+
+    // left distance sensor
+    if(!seeLeft){
       SetMotor(mLeft, -1);
       SetMotor(mRight, 1);
       close = true;
@@ -96,11 +96,13 @@ int main() {
       SetMotor(mRight, 1);
       close = false;
     }
-    temp = ADCRead(snrLeft);
-    see = temp > 0.4;
+    seeLeft = ADCRead(snrLeft) > 0.4;
     r = checkADC(adc[0]);
     m = checkADC(adc[1]);
     l = checkADC(adc[2]);
+
+    // right distance sensor
+
     // line following
     // SetMotor(mLeft, 0.1);
     // SetMotor(mRight, 0.1);
@@ -134,8 +136,7 @@ int main() {
       l = checkADC(adc[2]);
     }
     // increasing the value compared to will decrease the distance sensed
-    temp = ADCRead(snrLeft);
-    see = temp > 0.4;
+    seeLeft = ADCRead(snrLeft) > 0.4;
   }
 
   //doesnt work with fast turns
