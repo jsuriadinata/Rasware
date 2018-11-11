@@ -31,7 +31,8 @@ void initialize(){
     adc[2] = InitializeADC(PIN_D2);
     mRight = InitializeServoMotor(PIN_B0, true);
     mLeft = InitializeServoMotor(PIN_B1, false);
-    snr = InitializeADC(PIN_E4);
+    snrLeft = InitializeADC(PIN_E4);
+    snrRight = InitializeADC(PIN_E5);
 }
 
 // checks the value of the ADC
@@ -41,9 +42,9 @@ tBoolean checkADC(tADC *a){
   return ADCRead(a) < 0.5;
 }
 
-tBoolean watch(){
-  return ADCRead(snr) > 0.1;
-}
+// tBoolean watch(){
+//   return ADCRead(snr) > 0.1;
+// }
 
 void rotate(){
   SetMotor(mLeft, -1);
@@ -81,19 +82,21 @@ int main() {
     // }
     // temp1 = ADCRead(snr);
     if(!see){
-        rotate();
-    } else {
-      if (temp > 0.97 && close == true){
-        SetMotor(mLeft, -0.3);
-        SetMotor(mRight, -0.1);
+      SetMotor(mLeft, -1);
+      SetMotor(mRight, 1);
+      close = true;
+    } else if (temp > 0.97 && close){
+        SetMotor(mLeft, -1);
+        SetMotor(mRight, -0.85);
         Wait(1);
         close = false;
-      }
+    } else {
       WaitUS(20 - (20 * temp));
       SetMotor(mLeft, 1);
       SetMotor(mRight, 1);
+      close = false;
     }
-    temp = ADCRead(snr);
+    temp = ADCRead(snrLeft);
     see = temp > 0.4;
     r = checkADC(adc[0]);
     m = checkADC(adc[1]);
@@ -102,30 +105,36 @@ int main() {
     // SetMotor(mLeft, 0.1);
     // SetMotor(mRight, 0.1);
     // Wait(1);
+    // if(r){
+    //   SetMotor(mLeft, 0);
+    //   SetMotor(mRight, 0);
+    //   Wait(2);
+    // }
     while(r || m || l){
       if (r && m && l){
-        SetMotor(mLeft, -0.3);
-        SetMotor(mRight, -0.1);
-        WaitUS(20);
+      // if (m && l){
+        SetMotor(mLeft, -1);
+        SetMotor(mRight, -1);
+        Wait(1);
       } else if (r && m){
-        SetMotor(mLeft, 0.1);
-        SetMotor(mRight, 0.25);
+        SetMotor(mLeft, 0.5);
+        SetMotor(mRight, 1);
       } else if (l && m){
-        SetMotor(mLeft, 0.25);
-        SetMotor(mRight, 0.1);
+        SetMotor(mLeft, 1);
+        SetMotor(mRight, 0.5);
       } else if (r){
-        SetMotor(mLeft, 0.1);
-        SetMotor(mRight, 0.15);
+        SetMotor(mLeft, 0.7);
+        SetMotor(mRight, 1);
       } else if (l){
-        SetMotor(mLeft, 0.15);
-        SetMotor(mRight, 0.1);
+        SetMotor(mLeft, 1);
+        SetMotor(mRight, 0.7);
       }
       r = checkADC(adc[0]);
       m = checkADC(adc[1]);
       l = checkADC(adc[2]);
     }
     // increasing the value compared to will decrease the distance sensed
-    temp = ADCRead(snr);
+    temp = ADCRead(snrLeft);
     see = temp > 0.4;
   }
 
