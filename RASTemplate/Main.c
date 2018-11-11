@@ -12,7 +12,8 @@ static tMotor *mRight;
 
 static tADC *adc[3];
 
-static tADC *snr;
+static tADC *snrLeft;
+static tADC *snrRight;
 
 static tBoolean close = true;
 
@@ -31,7 +32,7 @@ void initialize(){
     mRight = InitializeServoMotor(PIN_B0, true);
     mLeft = InitializeServoMotor(PIN_B1, false);
     snrLeft = InitializeADC(PIN_E4);
-    snrRight = InitializeADC(PIN_E5);
+    // snrRight = InitializeADC(PIN_E5);
 }
 
 // checks the value of the ADC
@@ -53,7 +54,10 @@ void rotate(){
 
 int main() {
   initialize();
+  float tempLeft;
+  float tempRight;
   tBoolean seeLeft = ADCRead(snrLeft) > 0.4;
+  //tBoolean seeRight = ADCRead(snrRight) > 0.4;
   tBoolean r = checkADC(adc[0]);
   tBoolean m = checkADC(adc[1]);
   tBoolean l = checkADC(adc[2]);
@@ -96,12 +100,18 @@ int main() {
       SetMotor(mRight, 1);
       close = false;
     }
-    seeLeft = ADCRead(snrLeft) > 0.4;
+    tempLeft = ADCRead(snrLeft);
+    tempRight = ADCRead(snrRight);
+    seeLeft = tempLeft > 0.4;
+    //seeRight = tempRight > 0.4;
     r = checkADC(adc[0]);
     m = checkADC(adc[1]);
     l = checkADC(adc[2]);
 
-    // right distance sensor
+    /* right distance sensor
+
+
+    */
 
     // line following
     // SetMotor(mLeft, 0.1);
@@ -136,7 +146,10 @@ int main() {
       l = checkADC(adc[2]);
     }
     // increasing the value compared to will decrease the distance sensed
-    seeLeft = ADCRead(snrLeft) > 0.4;
+    tempLeft = ADCRead(snrLeft);
+    tempRight = ADCRead(snrRight);
+    seeLeft = tempLeft > 0.4;
+    //seeRight = ADCRead(snrRight) > 0.4;
   }
 
   //doesnt work with fast turns
