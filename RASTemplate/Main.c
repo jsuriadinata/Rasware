@@ -158,18 +158,21 @@ void detection(){
 
 int main() {
   initialize();
-  int x = 0;
-  int left = 0;
-  int right = 0;
-  while(x < 5 && first){
-    left = watch(0);
-    right = watch(1);
-    SetMotor(mLeft, -0.1);
+  // int x = 0;
+  // int left = 0;
+  // int right = 0;
+  // while(x < 5 && first){
+    // left = watch(0);
+    // right = watch(1);
+    SetMotor(mLeft, 0.8);
     SetMotor(mRight, -1);
-    Wait(0.2);
+    Wait(0.3);
+    SetMotor(mLeft, -1);
+    SetMotor(mRight, -1);
+    Wait(0.6);
     watch(0);
-    x++;
-  }
+    // x++;
+  // }
   rotateLeft();
 
   // float temp1 = 999999;
