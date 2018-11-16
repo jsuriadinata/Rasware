@@ -96,6 +96,11 @@ void forward(){
   SetMotor(mRight, 1);
 }
 
+void backward(){
+  SetMotor(mLeft, -1);
+  SetMotor(mRight, -1);
+}
+
 void checkWhite(){
   r = checkADC(adc[0]);
   m = checkADC(adc[1]);
@@ -106,15 +111,14 @@ void whiteSensor(){
   checkWhite();
   while(r || m || l){
     if (r && m && l){
-      SetMotor(mLeft, -1);
-      SetMotor(mRight, -1);
+      backward();
       Wait(1);
     } else if (r && m){
-      SetMotor(mLeft, 0.5);
-      SetMotor(mRight, 1);
+      backward();
+      Wait(1);
     } else if (l && m){
-      SetMotor(mLeft, 1);
-      SetMotor(mRight, 0.5);
+      backward();
+      Wait(1);
     } else if (r){
       rotateLeft();
     } else if (l){
